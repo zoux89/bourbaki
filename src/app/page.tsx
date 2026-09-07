@@ -1,65 +1,123 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
+import CreativeCorner from "@/components/CreativeCorner";
+import AutomataGrid from "@/components/AutomataGrid";
+import GitHubProjects from "@/components/GitHubProjects";
+import BooksCarousel from "@/components/BooksCarousel";
+import TerminalWindow from "@/components/TerminalWindow";
+import ReadingsList from "@/components/ReadingsList";
+import WritingsList from "@/components/WritingsList";
+import Snapshots from "@/components/Snapshots";
+import { Terminal, Github, Mail } from "lucide-react";
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-[var(--nb-bg)] p-4 md:p-6 lg:p-8 transition-colors duration-300">
+      {/* Header */}
+      <header className="max-w-7xl mx-auto mb-6">
+        <div className="bg-[var(--nb-bg-card)] border-3 border-[var(--nb-border)] shadow-[4px_4px_0_0_var(--nb-border)] p-4 flex items-center justify-between transition-colors">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[var(--nb-primary)] border-2 border-[var(--nb-border)] flex items-center justify-center">
+              <Terminal className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-[var(--nb-text)] font-bold text-xl">bourbaki.blog</span>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <nav className="hidden md:flex items-center gap-4">
+              <Link href="/projects" className="text-[var(--nb-text)] hover:text-[var(--nb-primary)] transition-colors font-medium">Projects</Link>
+              <Link href="/blog" className="text-[var(--nb-text)] hover:text-[var(--nb-primary)] transition-colors font-medium">Blog</Link>
+              <Link href="/terminal" className="text-[var(--nb-text)] hover:text-[var(--nb-primary)] transition-colors font-medium">Terminal</Link>
+            </nav>
+            <ThemeToggle />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      {/* Main Grid */}
+      <main className="max-w-7xl mx-auto">
+        {/* Row 1: Creative Corner | Automata | GitHub Projects | Books */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <div className="min-h-[280px] animate-slide-in" style={{ animationDelay: "0.1s" }}>
+            <CreativeCorner />
+          </div>
+          <div className="min-h-[280px] animate-slide-in" style={{ animationDelay: "0.2s" }}>
+            <AutomataGrid />
+          </div>
+          <div className="min-h-[280px] animate-slide-in" style={{ animationDelay: "0.3s" }}>
+            <GitHubProjects />
+          </div>
+          <div className="min-h-[280px] animate-slide-in" style={{ animationDelay: "0.4s" }}>
+            <BooksCarousel />
+          </div>
+        </div>
+
+        {/* Row 2: Terminal | Readings | Writings | Snapshots */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <div id="terminal" className="min-h-[320px] animate-slide-in" style={{ animationDelay: "0.5s" }}>
+            <TerminalWindow />
+          </div>
+          <div className="min-h-[320px] animate-slide-in" style={{ animationDelay: "0.6s" }}>
+            <ReadingsList />
+          </div>
+          <div id="writings" className="min-h-[320px] animate-slide-in" style={{ animationDelay: "0.7s" }}>
+            <WritingsList />
+          </div>
+          <div className="min-h-[320px] animate-slide-in" style={{ animationDelay: "0.8s" }}>
+            <Snapshots />
+          </div>
+        </div>
+
+        {/* Footer CTA */}
+        <div className="animate-slide-in" style={{ animationDelay: "0.9s" }}>
+          <div className="bg-[var(--nb-primary)] border-3 border-[var(--nb-border)] shadow-[4px_4px_0_0_var(--nb-border)] p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold text-white mb-1">Let&apos;s connect</h2>
+              <p className="text-white/80 text-sm">Always open to interesting conversations and collaborations</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <a
+                href="mailto:hello@bourbaki.blog"
+                className="w-12 h-12 bg-white border-2 border-[var(--nb-border)] flex items-center justify-center hover:bg-[var(--nb-bg)] hover:translate-x-0.5 hover:translate-y-0.5 shadow-[4px_4px_0_0_var(--nb-border)] hover:shadow-[2px_2px_0_0_var(--nb-border)] transition-all"
+              >
+                <Mail className="w-5 h-5 text-[var(--nb-primary)]" />
+              </a>
+              <a
+                href="https://github.com/bour278"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 bg-white border-2 border-[var(--nb-border)] flex items-center justify-center hover:bg-[var(--nb-bg)] hover:translate-x-0.5 hover:translate-y-0.5 shadow-[4px_4px_0_0_var(--nb-border)] hover:shadow-[2px_2px_0_0_var(--nb-border)] transition-all"
+              >
+                <Github className="w-5 h-5 text-[var(--nb-primary)]" />
+              </a>
+            </div>
+          </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="max-w-7xl mx-auto mt-8">
+        <div className="border-t-3 border-[var(--nb-border)] pt-6 pb-4 flex flex-col md:flex-row items-center justify-between gap-4 transition-colors">
+          <p className="text-[var(--nb-text-muted)] text-sm">© 2025 bourbaki.blog — Built with curiosity</p>
+          <div className="flex items-center gap-2 text-[var(--nb-text-muted)] text-sm">
+            <span>Made with</span>
+            <span className="text-[var(--nb-primary)] font-mono">Next.js</span>
+            <span>+</span>
+            <span className="text-[var(--nb-primary)] font-mono">Tailwind</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

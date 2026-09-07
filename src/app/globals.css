@@ -1,26 +1,210 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light Mode - Neobrutalism */
+  --nb-bg: #f5f5f5;
+  --nb-bg-secondary: #ffffff;
+  --nb-bg-card: #ffffff;
+  --nb-primary: #0066FF;
+  --nb-primary-hover: #0052cc;
+  --nb-accent: #00D4FF;
+  --nb-text: #0a0a0a;
+  --nb-text-muted: #666666;
+  --nb-border: #0a0a0a;
+  --nb-success: #22c55e;
+  --nb-warning: #f59e0b;
+  --nb-error: #ef4444;
+  --nb-terminal-bg: #1a1a1a;
+  --nb-terminal-text: #22c55e;
+  
+  /* Design Tokens */
+  --nb-border-width: 3px;
+  --nb-shadow-offset: 4px;
+  --nb-radius: 0px;
+}
+
+[data-theme="dark"] {
+  --nb-bg: #0a0a0a;
+  --nb-bg-secondary: #121212;
+  --nb-bg-card: #1a1a1a;
+  --nb-primary: #0066FF;
+  --nb-primary-hover: #0052cc;
+  --nb-accent: #00D4FF;
+  --nb-text: #ffffff;
+  --nb-text-muted: #888888;
+  --nb-border: #ffffff;
+  --nb-success: #22c55e;
+  --nb-warning: #f59e0b;
+  --nb-error: #ef4444;
+  --nb-terminal-bg: #0a0a0a;
+  --nb-terminal-text: #22c55e;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--nb-bg);
+  --color-foreground: var(--nb-text);
+  --color-primary: var(--nb-primary);
+  --color-accent: var(--nb-accent);
+  --color-muted: var(--nb-text-muted);
+  --color-card: var(--nb-bg-card);
+  --color-success: var(--nb-success);
+  --color-border: var(--nb-border);
+  --font-sans: var(--font-lexend);
+  --font-mono: var(--font-jetbrains);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-y: scroll; /* Fallback */
+  overflow-y: overlay; /* Overlay scrollbar - doesn't affect layout */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--nb-bg);
+  color: var(--nb-text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Neobrutalism Base Component Classes */
+.nb-border {
+  border: var(--nb-border-width) solid var(--nb-border);
+}
+
+.nb-shadow {
+  box-shadow: var(--nb-shadow-offset) var(--nb-shadow-offset) 0 0 var(--nb-border);
+}
+
+.nb-shadow-primary {
+  box-shadow: var(--nb-shadow-offset) var(--nb-shadow-offset) 0 0 var(--nb-primary);
+}
+
+.nb-card {
+  background: var(--nb-bg-card);
+  border: var(--nb-border-width) solid var(--nb-border);
+  box-shadow: var(--nb-shadow-offset) var(--nb-shadow-offset) 0 0 var(--nb-border);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nb-btn {
+  background: var(--nb-primary);
+  color: white;
+  border: var(--nb-border-width) solid var(--nb-border);
+  box-shadow: var(--nb-shadow-offset) var(--nb-shadow-offset) 0 0 var(--nb-border);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.nb-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 var(--nb-border);
+}
+
+.nb-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 0 var(--nb-border);
+}
+
+/* Terminal styling */
+.terminal {
+  background: var(--nb-terminal-bg);
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+}
+
+.terminal-text {
+  color: var(--nb-terminal-text);
+}
+
+.terminal-prompt {
+  color: #0066FF;
+}
+
+.terminal-cursor {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Scrollbar - Fade thumb only */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 102, 255, 0);
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-corner {
+  display: none;
+}
+
+/* When scrolling - fade in the thumb */
+.is-scrolling::-webkit-scrollbar-thumb {
+  background: rgba(0, 102, 255, 0.8);
+}
+
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+html.is-scrolling {
+  scrollbar-color: var(--nb-primary) transparent;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* Spotify green */
+.spotify-green {
+  color: #1DB954;
+}
+
+.bg-spotify {
+  background-color: #1DB954;
 }
