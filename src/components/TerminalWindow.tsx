@@ -116,7 +116,7 @@ export default function TerminalWindow() {
         return;
 
       case "whoami":
-        output = ["bourbaki - quant analyst & curious mind"];
+        output = ["bourbaki - CS, Logic, and Games"];
         break;
 
       case "cat":

@@ -142,7 +142,7 @@ export default function TerminalPage() {
         output = [
           "",
           "  Name:     Bourbaki",
-          "  Role:     Quant Analyst & Curious Mind",
+          "  Role:     CS, Logic, and Games",
           "  Location: The Internet",
           "  Focus:    Building elegant solutions to complex problems",
           "",
@@ -155,13 +155,13 @@ export default function TerminalPage() {
         output = [
           "",
           "       ╭───────────────────────╮",
-          "       │    ▄▄▄▄▄▄▄▄▄▄▄▄▄     │     bourbaki@web",
-          "       │   ██████████████     │     ─────────────",
-          "       │   ██  ████  ████     │     OS: Browser",
-          "       │   ██████████████     │     Host: bourbaki.blog",
-          "       │   ██▄▄▄██▄▄▄▄██     │     Kernel: Next.js 15",
-          "       │   ██████████████     │     Shell: custom-sh",
-          "       │    ▀▀▀▀▀▀▀▀▀▀▀▀     │     Theme: Neobrutalism",
+          "       │    ▄▄▄▄▄▄▄▄▄▄▄▄▄      │     bourbaki@web",
+          "       │   ██████████████      │     ─────────────",
+          "       │   ██  ████  ████      │     OS: Browser",
+          "       │   ██████████████      │     Host: bourbaki.blog",
+          "       │   ██▄▄▄██▄▄▄▄██       │     Kernel: Next.js 15",
+          "       │   ██████████████      │     Shell: custom-sh",
+          "       │    ▀▀▀▀▀▀▀▀▀▀▀▀       │     Theme: Neobrutalism",
           "       ╰───────────────────────╯     Terminal: xterm-256",
           "",
         ];
@@ -213,11 +213,11 @@ export default function TerminalPage() {
         output = [
           "",
           "  ┌─ Connect ────────────────────────────────────────┐",
-          "  │                                                   │",
-          "  │  GitHub    → github.com/bour278                   │",
-          "  │  Email     → hello@bourbaki.blog                  │",
-          "  │                                                   │",
-          "  └───────────────────────────────────────────────────┘",
+          "  │                                                  │",
+          "  │  GitHub    → github.com/bour278                  │",
+          "  │  Email     → hello@bourbaki.blog                 │",
+          "  │                                                  │",
+          "  └──────────────────────────────────────────────────┘",
           "",
         ];
         break;

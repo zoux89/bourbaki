@@ -126,7 +126,7 @@ export default function CreativeCorner() {
               {greetings[greeting]}
             </div>
             <p className="text-[var(--nb-text-muted)] text-sm">
-              Quant analyst & curious mind
+              CS, Logic, and Games
             </p>
           </div>
         )}
