@@ -25,9 +25,8 @@ const languageColors: Record<string, string> = {
 };
 
 const defaultProjects: Project[] = [
-  { name: "text2sql", description: "Natural language to SQL query converter", stars: 1, language: "Python", url: "https://github.com/bour278/text2sql" },
-  { name: "bourbaki", description: "Notes about random Math and CS topics", language: "TypeScript", url: "https://github.com/bour278/bourbaki" },
-  { name: "preptide", description: "SWE, Math, Data Science notes for problem solving", language: "MDX", url: "https://github.com/bour278/preptide" },
+  { name: "ternary", description: "Universal Ternary Gates - exploring computation in base-3", language: "TypeScript", url: "https://github.com/bour278/ternary" },
+  { name: "data-hub", description: "Data services and processes for market data", language: "Python", url: "https://github.com/Kalshit/data-hub" },
 ];
 
 export default function GitHubProjects() {
@@ -42,7 +41,7 @@ export default function GitHubProjects() {
 
         const data: GitHubData = await res.json();
         if (data.repos && data.repos.length > 0) {
-          const projectList = data.repos.slice(0, 3).map((repo) => ({
+          const projectList = data.repos.map((repo) => ({
             name: repo.name,
             description: repo.description || "No description",
             stars: repo.stars,

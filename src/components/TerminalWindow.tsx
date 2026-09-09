@@ -59,6 +59,7 @@ export default function TerminalWindow() {
           "  whoami   - display user info",
           "  cat      - display file contents",
           "  projects - list featured projects",
+          "  readings - list papers and articles",
         ];
         break;
 
@@ -71,6 +72,19 @@ export default function TerminalWindow() {
             return `→ ${repo.name.padEnd(14)} ${lang} ${repo.description?.slice(0, 30) || ""}`;
           }), "", "cd ~/projects/<name> to explore", ""];
         }
+        break;
+
+      case "readings":
+        output = [
+          "",
+          "→ Reversible Model Merging    Alipour et al.",
+          "→ SVCCA: NN Representations   NeurIPS 2017",
+          "→ Hyperarithmetical Sets      Moschovakis",
+          "→ Signature Methods Trading   Kuan-Yang",
+          "",
+          "Visit /readings for more",
+          "",
+        ];
         break;
 
       case "ls": {

@@ -38,6 +38,12 @@ export interface GitHubData {
 
 const GITHUB_API = "https://api.github.com";
 
+// Pinned repositories to display (owner/repo format)
+export const PINNED_REPOS: { owner: string; repo: string }[] = [
+  { owner: "bour278", repo: "ternary" },
+  { owner: "Kalshit", repo: "data-hub" },
+];
+
 async function githubFetch<T>(endpoint: string, token?: string): Promise<T> {
   const headers: HeadersInit = {
     Accept: "application/vnd.github.v3+json",
@@ -71,6 +77,33 @@ export async function fetchUserRepos(
   return repos.filter((repo) => !repo.name.startsWith("."));
 }
 
+// Fetch a specific repo by owner and name
+export async function fetchRepo(
+  owner: string,
+  repo: string,
+  token?: string
+): Promise<GitHubRepo> {
+  return githubFetch<GitHubRepo>(`/repos/${owner}/${repo}`, token);
+}
+
+// Fetch multiple specific repos (for pinned repos)
+export async function fetchPinnedRepos(
+  token?: string
+): Promise<GitHubRepo[]> {
+  const repos = await Promise.all(
+    PINNED_REPOS.map(async ({ owner, repo }) => {
+      try {
+        return await fetchRepo(owner, repo, token);
+      } catch (error) {
+        console.error(`Failed to fetch ${owner}/${repo}:`, error);
+        return null;
+      }
+    })
+  );
+
+  return repos.filter((repo): repo is GitHubRepo => repo !== null);
+}
+
 export async function fetchRepoTree(
   owner: string,
   repo: string,
@@ -95,13 +128,18 @@ export async function fetchGitHubData(
   username: string,
   token?: string
 ): Promise<GitHubData> {
-  const repos = await fetchUserRepos(username, token);
+  // Fetch pinned repos instead of all user repos
+  const repos = await fetchPinnedRepos(token);
 
-  // Fetch trees for each repo (in parallel, but limited)
+  // Fetch trees for each repo (in parallel)
   const reposWithTrees = await Promise.all(
-    repos.slice(0, 10).map(async (repo): Promise<RepoWithTree> => {
+    repos.map(async (repo): Promise<RepoWithTree> => {
+      // Extract owner from html_url (e.g., https://github.com/owner/repo)
+      const urlParts = repo.html_url.split("/");
+      const owner = urlParts[urlParts.length - 2];
+
       const tree = await fetchRepoTree(
-        username,
+        owner,
         repo.name,
         repo.default_branch,
         token

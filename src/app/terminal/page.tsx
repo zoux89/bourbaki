@@ -80,6 +80,7 @@ export default function TerminalPage() {
           "|  whoami          - display user info                 |",
           "|  neofetch        - display system info               |",
           "|  projects        - list all projects                 |",
+          "|  readings        - list papers and articles          |",
           "|  blog            - list blog posts                   |",
           "|  social          - display social links              |",
           "|  exit            - return to main site               |",
@@ -186,6 +187,30 @@ export default function TerminalPage() {
             "",
           ];
         }
+        break;
+
+      case "readings":
+        output = [
+          "",
+          "  +-- Reading List -----------------------------------------+",
+          "  |                                                         |",
+          "  |  [paper] Reversible Model Merging (Low-rank)            |",
+          "  |          Alipour, Amiri - arXiv 2025                     |",
+          "  |                                                         |",
+          "  |  [paper] SVCCA: Comparing NN Representations            |",
+          "  |          Raghu et al. - NeurIPS 2017                     |",
+          "  |                                                         |",
+          "  |  [paper] Hyperarithmetical Sets                         |",
+          "  |          Moschovakis - UCLA Mathematics                  |",
+          "  |                                                         |",
+          "  |  [article] Signature Methods in Trading                 |",
+          "  |            Kuan-Yang - Portfolio                         |",
+          "  |                                                         |",
+          "  +---------------------------------------------------------+",
+          "",
+          "  Visit /readings for the full list",
+          "",
+        ];
         break;
 
       case "blog":
