@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 import "katex/dist/katex.min.css";
 import { BlockMath, InlineMath } from "react-katex";
 
@@ -35,7 +36,7 @@ export default function DistributionalParametersJuntaLearning() {
   return (
     <div className="min-h-screen bg-[var(--nb-bg)] transition-colors duration-300">
       <header className="border-b-3 border-[var(--nb-border)] bg-[var(--nb-bg-card)]">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-[var(--nb-text)] hover:text-[var(--nb-primary)] transition-colors"
@@ -43,6 +44,7 @@ export default function DistributionalParametersJuntaLearning() {
             <ArrowLeft className="w-4 h-4" />
             Back to home
           </Link>
+          <ThemeToggle />
         </div>
       </header>
 

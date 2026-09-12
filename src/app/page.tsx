@@ -109,7 +109,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="max-w-7xl mx-auto mt-8">
         <div className="border-t-3 border-[var(--nb-border)] pt-6 pb-4 flex flex-col md:flex-row items-center justify-between gap-4 transition-colors">
-          <p className="text-[var(--nb-text-muted)] text-sm">© 2025 bourbaki.blog — Built with curiosity</p>
+          <p className="text-[var(--nb-text-muted)] text-sm">2026 bourbaki.blog - Built with curiosity</p>
           <div className="flex items-center gap-2 text-[var(--nb-text-muted)] text-sm">
             <span>Made with</span>
             <span className="text-[var(--nb-primary)] font-mono">Next.js</span>
