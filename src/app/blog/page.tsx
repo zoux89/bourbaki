@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Calendar, Clock, Tag } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -20,16 +20,26 @@ interface Post {
 const posts: Post[] = [
   {
     id: 1,
+    slug: "distributional-parameters-junta-learning",
+    title: "Distributional Parameters in Proper Junta Learning",
+    excerpt: "Tight ETH bounds, fixed-parameter tractability from support geometry, and the limits of support-based distributional parameters.",
+    date: "Aug 2026",
+    readTime: "30 min read",
+    tags: ["Learning Theory", "Parameterized Complexity", "PAC Learning"],
+    featured: true,
+  },
+  {
+    id: 2,
     slug: "ternary-logic",
     title: "Universality in Ternary Logic",
     excerpt: "Optimal radix economy and the enumeration of universal gates in 3-valued logic systems.",
     date: "Dec 2025",
     readTime: "12 min read",
     tags: ["Logic", "Computer Science"],
-    featured: true,
+    featured: false,
   },
   {
-    id: 2,
+    id: 3,
     slug: "category-theory",
     title: "Notes on Category Theory",
     excerpt: "A formal summary of categories, functors, natural transformations, and related concepts.",
@@ -39,7 +49,7 @@ const posts: Post[] = [
     featured: false,
   },
   {
-    id: 3,
+    id: 4,
     slug: "dnf-learning-chebyshev",
     title: "Polynomial Approximation of DNF Formulae",
     excerpt: "Investigating low-degree approximations of boolean functions using Chebyshev polynomials and learning theory.",
@@ -51,14 +61,7 @@ const posts: Post[] = [
 ];
 
 export default function BlogPage() {
-  const [mounted, setMounted] = useState(false);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
 
   const allTags = Array.from(new Set(posts.flatMap((p) => p.tags)));
   const filteredPosts = selectedTag

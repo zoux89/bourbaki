@@ -18,6 +18,13 @@ interface WritingsListProps {
 
 const defaultWritings: Writing[] = [
   {
+    title: "Distributional Parameters in Proper Junta Learning",
+    date: "Aug 2026",
+    slug: "distributional-parameters-junta-learning",
+    tags: ["Learning Theory", "Parameterized Complexity"],
+    excerpt: "",
+  },
+  {
     title: "Universality in Ternary Logic",
     date: "Dec 2025",
     slug: "ternary-logic",

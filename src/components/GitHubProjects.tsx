@@ -24,14 +24,10 @@ const languageColors: Record<string, string> = {
   MDX: "#fcb32c",
 };
 
-const defaultProjects: Project[] = [
-  { name: "ternary", description: "Universal Ternary Gates - exploring computation in base-3", language: "TypeScript", url: "https://github.com/bour278/ternary" },
-  { name: "data-hub", description: "Data services and processes for market data", language: "Python", url: "https://github.com/Kalshit/data-hub" },
-];
-
 export default function GitHubProjects() {
-  const [projects, setProjects] = useState<Project[]>(defaultProjects);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function fetchProjects() {
@@ -50,9 +46,8 @@ export default function GitHubProjects() {
           }));
           setProjects(projectList);
         }
-      } catch (err) {
-        console.error("Error fetching projects:", err);
-        // Keep default projects
+      } catch {
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -75,6 +70,11 @@ export default function GitHubProjects() {
       </div>
 
       <div className="flex-1 space-y-3 overflow-auto">
+        {error && (
+          <p className="text-sm text-[var(--nb-text-muted)]">
+            GitHub projects are temporarily unavailable.
+          </p>
+        )}
         {projects.map((project, index) => (
           <a
             key={index}

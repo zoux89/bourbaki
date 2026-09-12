@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, Github, Star, GitFork, Folder, RefreshCw, Clock } from "lucide-react";
+import { ArrowLeft, ExternalLink, Github, Star, Folder, RefreshCw, Clock } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { GitHubData, RepoWithTree } from "@/lib/github";
 
@@ -37,49 +37,6 @@ const languageColors: Record<string, string> = {
   Shell: "#89e051",
 };
 
-// Default projects fallback
-const defaultProjects: Project[] = [
-  {
-    id: "text2sql",
-    title: "text2sql",
-    description: "Natural language to SQL query converter.",
-    longDescription: "A tool that converts natural language queries into SQL statements using LLMs.",
-    tags: ["Python", "NLP", "SQL"],
-    githubUrl: "https://github.com/bour278/text2sql",
-    stars: 1,
-    language: "Python",
-    lastUpdated: new Date().toISOString(),
-    tree: [],
-    featured: true,
-  },
-  {
-    id: "bourbaki",
-    title: "bourbaki",
-    description: "Notes about random Math and CS topics.",
-    longDescription: "A collection of notes and explorations covering various topics in mathematics and computer science.",
-    tags: ["TypeScript", "Math", "CS"],
-    githubUrl: "https://github.com/bour278/bourbaki",
-    stars: 0,
-    language: "TypeScript",
-    lastUpdated: new Date().toISOString(),
-    tree: [],
-    featured: true,
-  },
-  {
-    id: "preptide",
-    title: "preptide",
-    description: "SWE, Math, Data Science notes for problem solving.",
-    longDescription: "Comprehensive notes and resources for software engineering interviews.",
-    tags: ["MDX", "Notes", "Interview Prep"],
-    githubUrl: "https://github.com/bour278/preptide",
-    stars: 0,
-    language: "MDX",
-    lastUpdated: new Date().toISOString(),
-    tree: [],
-    featured: true,
-  },
-];
-
 function repoToProject(repo: RepoWithTree, featured: boolean = false): Project {
   return {
     id: repo.name,
@@ -113,10 +70,11 @@ function formatDate(dateStr: string): string {
 export default function ProjectsPage() {
   const [mounted, setMounted] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [projects, setProjects] = useState<Project[]>(defaultProjects);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastFetched, setLastFetched] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -125,6 +83,7 @@ export default function ProjectsPage() {
 
   const fetchProjects = async () => {
     try {
+      setError(false);
       const res = await fetch("/api/github");
       if (!res.ok) throw new Error("Failed to fetch");
 
@@ -135,9 +94,8 @@ export default function ProjectsPage() {
         setProjects(projectList);
         setLastFetched(data.fetchedAt);
       }
-    } catch (err) {
-      console.error("Error fetching projects:", err);
-      // Keep default projects
+    } catch {
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -146,19 +104,20 @@ export default function ProjectsPage() {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
+      setError(false);
       const res = await fetch("/api/github", { method: "POST" });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.data?.repos) {
-          const projectList = data.data.repos.map((repo: RepoWithTree, i: number) => 
-            repoToProject(repo, i < 3)
-          );
-          setProjects(projectList);
-          setLastFetched(data.data.fetchedAt);
-        }
+      if (!res.ok) throw new Error("Failed to refresh");
+
+      const data = await res.json();
+      if (data.data?.repos) {
+        const projectList = data.data.repos.map((repo: RepoWithTree, i: number) =>
+          repoToProject(repo, i < 3)
+        );
+        setProjects(projectList);
+        setLastFetched(data.data.fetchedAt);
       }
-    } catch (err) {
-      console.error("Error refreshing:", err);
+    } catch {
+      setError(true);
     } finally {
       setRefreshing(false);
     }
@@ -203,6 +162,13 @@ export default function ProjectsPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8">
+        {error && (
+          <div className="mb-6 border-2 border-[var(--nb-border)] p-4 text-sm text-[var(--nb-text-muted)]">
+            GitHub projects are temporarily unavailable. Check the server&apos;s
+            GitHub configuration and try again.
+          </div>
+        )}
+
         {/* Sync Status */}
         {lastFetched && (
           <div className="mb-6 flex items-center gap-2 text-sm text-[var(--nb-text-muted)]">

@@ -37,12 +37,7 @@ export interface GitHubData {
 }
 
 const GITHUB_API = "https://api.github.com";
-
-// Pinned repositories to display (owner/repo format)
-export const PINNED_REPOS: { owner: string; repo: string }[] = [
-  { owner: "bour278", repo: "ternary" },
-  { owner: "Kalshit", repo: "data-hub" },
-];
+const GITHUB_GRAPHQL_API = `${GITHUB_API}/graphql`;
 
 async function githubFetch<T>(endpoint: string, token?: string): Promise<T> {
   const headers: HeadersInit = {
@@ -61,6 +56,91 @@ async function githubFetch<T>(endpoint: string, token?: string): Promise<T> {
   }
 
   return res.json();
+}
+
+const PINNED_REPOS_QUERY = `
+  query PinnedRepositories($username: String!) {
+    user(login: $username) {
+      pinnedItems(first: 6, types: REPOSITORY) {
+        nodes {
+          ... on Repository {
+            name
+            description
+            url
+            homepageUrl
+            stargazerCount
+            pushedAt
+            defaultBranchRef {
+              name
+            }
+            owner {
+              login
+            }
+            primaryLanguage {
+              name
+            }
+            repositoryTopics(first: 10) {
+              nodes {
+                topic {
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+interface GraphQLPinnedRepo {
+  name: string;
+  description: string | null;
+  url: string;
+  homepageUrl: string | null;
+  stargazerCount: number;
+  pushedAt: string;
+  defaultBranchRef: { name: string } | null;
+  owner: { login: string };
+  primaryLanguage: { name: string } | null;
+  repositoryTopics: {
+    nodes: Array<{ topic: { name: string } } | null>;
+  };
+}
+
+interface PinnedReposResponse {
+  data?: {
+    user: {
+      pinnedItems: {
+        nodes: Array<GraphQLPinnedRepo | null>;
+      };
+    } | null;
+  };
+  errors?: Array<{ message: string }>;
+}
+
+async function githubGraphQLFetch<T>(
+  query: string,
+  variables: Record<string, string>,
+  token: string
+): Promise<T> {
+  const res = await fetch(GITHUB_GRAPHQL_API, {
+    method: "POST",
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "User-Agent": "bourbaki-site",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`GitHub GraphQL API error: ${res.status}`);
+  }
+
+  return res.json() as Promise<T>;
 }
 
 export async function fetchUserRepos(
@@ -86,22 +166,44 @@ export async function fetchRepo(
   return githubFetch<GitHubRepo>(`/repos/${owner}/${repo}`, token);
 }
 
-// Fetch multiple specific repos (for pinned repos)
+// GitHub's REST API does not expose profile pins; GraphQL does.
 export async function fetchPinnedRepos(
+  username: string,
   token?: string
 ): Promise<GitHubRepo[]> {
-  const repos = await Promise.all(
-    PINNED_REPOS.map(async ({ owner, repo }) => {
-      try {
-        return await fetchRepo(owner, repo, token);
-      } catch (error) {
-        console.error(`Failed to fetch ${owner}/${repo}:`, error);
-        return null;
-      }
-    })
+  if (!token) {
+    throw new Error("GITHUB_TOKEN is required to fetch pinned repositories");
+  }
+
+  const response = await githubGraphQLFetch<PinnedReposResponse>(
+    PINNED_REPOS_QUERY,
+    { username },
+    token
   );
 
-  return repos.filter((repo): repo is GitHubRepo => repo !== null);
+  if (response.errors?.length) {
+    throw new Error(`GitHub GraphQL request failed: ${response.errors[0].message}`);
+  }
+
+  if (!response.data?.user) {
+    throw new Error(`GitHub user "${username}" was not found`);
+  }
+
+  return response.data.user.pinnedItems.nodes
+    .filter((repo): repo is GraphQLPinnedRepo => repo !== null)
+    .map((repo) => ({
+      name: repo.name,
+      description: repo.description,
+      language: repo.primaryLanguage?.name ?? null,
+      stargazers_count: repo.stargazerCount,
+      html_url: repo.url,
+      homepage: repo.homepageUrl,
+      topics: repo.repositoryTopics.nodes
+        .filter((node): node is { topic: { name: string } } => node !== null)
+        .map((node) => node.topic.name),
+      pushed_at: repo.pushedAt,
+      default_branch: repo.defaultBranchRef?.name ?? "main",
+    }));
 }
 
 export async function fetchRepoTree(
@@ -128,8 +230,8 @@ export async function fetchGitHubData(
   username: string,
   token?: string
 ): Promise<GitHubData> {
-  // Fetch pinned repos instead of all user repos
-  const repos = await fetchPinnedRepos(token);
+  // Fetch pinned repos from user's GitHub profile
+  const repos = await fetchPinnedRepos(username, token);
 
   // Fetch trees for each repo (in parallel)
   const reposWithTrees = await Promise.all(

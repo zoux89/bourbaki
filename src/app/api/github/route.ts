@@ -1,23 +1,24 @@
 import { NextResponse } from "next/server";
 import { fetchGitHubData, GitHubData } from "@/lib/github";
 
-// Cache the data in memory (resets on server restart)
-// Force cache clear on code change
 let cachedData: GitHubData | null = null;
-let lastFetch: number = 0;
-const CACHE_VERSION = 2; // Increment to clear cache
-
-// Cache for 1 hour (3600000ms) - adjust as needed
+let lastFetch = 0;
 const CACHE_DURATION = 60 * 60 * 1000;
+const CACHE_HEADERS = {
+  "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+};
+
+function json(data: GitHubData) {
+  return NextResponse.json(data, { headers: CACHE_HEADERS });
+}
 
 export async function GET() {
   const token = process.env.GITHUB_TOKEN;
   const username = process.env.GITHUB_USERNAME || "bour278";
 
-  // Check if cache is still valid
   const now = Date.now();
   if (cachedData && now - lastFetch < CACHE_DURATION) {
-    return NextResponse.json(cachedData);
+    return json(cachedData);
   }
 
   try {
@@ -25,23 +26,27 @@ export async function GET() {
     cachedData = data;
     lastFetch = now;
 
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error("GitHub API error:", error);
+    return json(data);
+  } catch {
+    // Do not log request headers or environment variables: the GitHub token
+    // must remain server-only.
+    console.error("GitHub data refresh failed");
 
-    // Return cached data if available, even if stale
     if (cachedData) {
-      return NextResponse.json(cachedData);
+      return json(cachedData);
     }
 
     return NextResponse.json(
-      { error: "Failed to fetch GitHub data" },
-      { status: 500 }
+      {
+        error: token
+          ? "Failed to fetch GitHub data"
+          : "GitHub integration is not configured",
+      },
+      { status: token ? 502 : 503 }
     );
   }
 }
 
-// Optional: Force refresh endpoint
 export async function POST() {
   const token = process.env.GITHUB_TOKEN;
   const username = process.env.GITHUB_USERNAME || "bour278";
@@ -52,11 +57,15 @@ export async function POST() {
     lastFetch = Date.now();
 
     return NextResponse.json({ success: true, data });
-  } catch (error) {
-    console.error("GitHub API error:", error);
+  } catch {
+    console.error("GitHub data refresh failed");
     return NextResponse.json(
-      { error: "Failed to refresh GitHub data" },
-      { status: 500 }
+      {
+        error: token
+          ? "Failed to refresh GitHub data"
+          : "GitHub integration is not configured",
+      },
+      { status: token ? 502 : 503 }
     );
   }
 }
