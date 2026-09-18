@@ -1,24 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
 import { Sun, Moon } from "lucide-react";
 
-export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(true);
+type Theme = "dark" | "light";
 
-  useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialDark = saved ? saved === "dark" : prefersDark;
-    setIsDark(initialDark);
-    document.documentElement.setAttribute("data-theme", initialDark ? "dark" : "light");
-  }, []);
+// The root layout sets data-theme on <html> before first paint, so the
+// attribute is the source of truth; this component only reads and toggles it.
+function subscribe(callback: () => void) {
+  const observer = new MutationObserver(callback);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+  return () => observer.disconnect();
+}
+
+function getSnapshot(): Theme {
+  return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+}
+
+function getServerSnapshot(): Theme {
+  return "dark";
+}
+
+export default function ThemeToggle() {
+  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const isDark = theme === "dark";
 
   const toggleTheme = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme ? "dark" : "light");
-    localStorage.setItem("theme", newTheme ? "dark" : "light");
+    const next: Theme = isDark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
   };
 
   return (
@@ -35,4 +48,3 @@ export default function ThemeToggle() {
     </button>
   );
 }
-

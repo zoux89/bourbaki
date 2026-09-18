@@ -20,16 +20,26 @@ interface Post {
 const posts: Post[] = [
   {
     id: 1,
+    slug: "minimal-dominating-sets-chordal-graphs-part-1",
+    title: "Minimal Dominating Sets in Chordal Graphs, Part I",
+    excerpt: "Domination and private neighbors, bounds on the number of minimal dominating sets, simplicial vertices in chordal graphs, and branch and reduce with measure and conquer.",
+    date: "Sep 2026",
+    readTime: "25 min read",
+    tags: ["Graph Theory", "Exact Algorithms", "Combinatorics"],
+    featured: true,
+  },
+  {
+    id: 2,
     slug: "distributional-parameters-junta-learning",
     title: "Distributional Parameters in Proper Junta Learning",
     excerpt: "Tight ETH bounds, fixed-parameter tractability from support geometry, and the limits of support-based distributional parameters.",
     date: "Aug 2026",
     readTime: "30 min read",
     tags: ["Learning Theory", "Parameterized Complexity", "PAC Learning"],
-    featured: true,
+    featured: false,
   },
   {
-    id: 2,
+    id: 3,
     slug: "ternary-logic",
     title: "Universality in Ternary Logic",
     excerpt: "Optimal radix economy and the enumeration of universal gates in 3-valued logic systems.",
@@ -39,7 +49,7 @@ const posts: Post[] = [
     featured: false,
   },
   {
-    id: 3,
+    id: 4,
     slug: "category-theory",
     title: "Notes on Category Theory",
     excerpt: "A formal summary of categories, functors, natural transformations, and related concepts.",
@@ -49,7 +59,7 @@ const posts: Post[] = [
     featured: false,
   },
   {
-    id: 4,
+    id: 5,
     slug: "dnf-learning-chebyshev",
     title: "Polynomial Approximation of DNF Formulae",
     excerpt: "Investigating low-degree approximations of boolean functions using Chebyshev polynomials and learning theory.",

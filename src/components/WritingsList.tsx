@@ -18,6 +18,13 @@ interface WritingsListProps {
 
 const defaultWritings: Writing[] = [
   {
+    title: "Minimal Dominating Sets in Chordal Graphs, Part I",
+    date: "Sep 2026",
+    slug: "minimal-dominating-sets-chordal-graphs-part-1",
+    tags: ["Graph Theory", "Exact Algorithms"],
+    excerpt: "",
+  },
+  {
     title: "Distributional Parameters in Proper Junta Learning",
     date: "Aug 2026",
     slug: "distributional-parameters-junta-learning",

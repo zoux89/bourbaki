@@ -26,7 +26,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="dark">
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
+      <head>
+        {/* Apply the saved theme before first paint so pages do not flash dark. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("theme");if(t!=="dark"&&t!=="light"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className={`${lexend.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
         <ScrollbarHandler />
         {children}
